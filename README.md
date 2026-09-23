@@ -19,8 +19,6 @@
 
 ### 权重文件
 
-权重放在 **Releases** 里，不随仓库提交（单个 129–148 MB，超过 GitHub 的 100 MB 单文件上限）。
-
 到 [Releases](https://github.com/Kevin14827/LuoTianyi-TTS/releases) 下载最新版本的两个附件：
 
 | 附件 | 大小 | 放到 | MD5 |
@@ -28,7 +26,7 @@
 | `tianyi2-e15.ckpt` | ≈148 MB | `weights/GPT_weights/` | `7c4f7051d85b50aace3bd928797c0d44` |
 | `tianyi2_e8_s128.pth` | ≈129 MB | `weights/SoVITS_weights/` | `ff5cd8eef78e6b47748ea64eab6c245c` |
 
-下完先对一遍 MD5，不匹配就是没下完：
+MD5：
 
 ```bash
 certutil -hashfile weights\GPT_weights\tianyi2-e15.ckpt MD5
@@ -68,7 +66,6 @@ ref/ref.wav       # 3–10 秒，无背景音乐、无混响
 ref/prompt.txt    # 与 ref.wav 逐字对应的文字
 ```
 
-`ref/` 里的音频**不会**进仓库（见 `.gitignore`），需要你自己准备。
 
 ### 4. 合成
 
@@ -114,7 +111,6 @@ python synth.py --text "Hello, this is Luo Tianyi." --lang en
 
 ## 已知限制
 
-- 训练素材取自现场演出录音，**自带扩声混响**，输出会带一点厅堂感。UVR5 去混响两条路线都试过，效果不理想，故保留原样。
 - 长句建议用标点自然断句，`cut5` 会自动切分。
 - 音高跨度大的句子（大幅度滑音、喊叫）稳定性会下降。
 
