@@ -29,4 +29,5 @@ Thumbs.db
 .vscode/
 .idea/
 
-# 注意：weights/ 不在此列——本仓库按设计需要分发权重
+# 权重（走 Release 分发，不进仓库）
+weights/

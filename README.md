@@ -33,6 +33,8 @@ certutil -hashfile weights\GPT_weights\tianyi2-e15.ckpt MD5
 certutil -hashfile weights\SoVITS_weights\tianyi2_e8_s128.pth MD5
 ```
 
+权重和 `weights/` 目录都已加入 `.gitignore`，不会被误提交。
+
 ---
 
 ## 快速开始
@@ -55,7 +57,13 @@ set GSV_ENGINE=D:\somewhere\engine
 
 ### 2. 放好权重
 
-从 Releases 下载两个附件，按上表放进 `weights/GPT_weights/` 和 `weights/SoVITS_weights/`。
+仓库里没有 `weights/` 目录，先自己建两个：
+
+```bash
+mkdir -p weights/GPT_weights weights/SoVITS_weights
+```
+
+从 Releases 下载两个附件，按上表放进去。
 
 ### 3. 准备参考音频
 
