@@ -1,0 +1,32 @@
+# 引擎（体积大，不进仓库）
+engine/
+GPT-SoVITS/
+
+# 参考音频与素材：版权敏感，不要提交
+ref/*.wav
+ref/*.mp3
+ref/*.flac
+voice_dataset*/
+*.list
+raw*/
+素材/
+
+# 输出
+output/
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 注意：weights/ 不在此列——本仓库按设计需要分发权重

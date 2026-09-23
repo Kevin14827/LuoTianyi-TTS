@@ -1,0 +1,14 @@
+# 推理侧最小依赖（引擎本体另见 GPT-SoVITS 仓库）
+torch>=2.1
+torchaudio
+soundfile
+numpy
+transformers
+librosa
+faster-whisper
+cn2an
+pypinyin
+jieba
+wordsegment
+LangSegment
+g2p_en
