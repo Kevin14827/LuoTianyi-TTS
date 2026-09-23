@@ -65,9 +65,9 @@ mkdir -p weights/GPT_weights weights/SoVITS_weights
 
 从 Releases 下载两个附件，按上表放进去。
 
-### 3. 准备参考音频
+### 3. 参考音频
 
-推理需要一段 3–10 秒的干净人声作为音色参考。放进 `ref/`：
+推理需要一段 3–10 秒的干净人声作为音色参考。查看 `ref/`：
 
 ```
 ref/ref.wav       # 3–10 秒，无背景音乐、无混响
