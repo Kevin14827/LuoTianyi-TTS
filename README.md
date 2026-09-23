@@ -2,7 +2,7 @@
 
 洛天依（ルォ・ティエンイー）音色的中文 / 日文 / 英文语音合成模型，基于 **GPT-SoVITS v2Pro** 微调。
 
-仓库只包含**推理代码 + 权重 + 文档**。训练素材不在此仓库内。
+仓库只包含**推理代码**。权重见 [Releases](https://github.com/Kevin14827/LuoTianyi-TTS/releases)，训练素材不在此仓库内。
 
 ---
 
