@@ -19,12 +19,21 @@
 
 ### 权重文件
 
-| 文件 | 大小 | MD5 |
-|---|---|---|
-| `weights/GPT_weights/tianyi2-e15.ckpt` | 155 MB | `7c4f7051d85b50aace3bd928797c0d44` |
-| `weights/SoVITS_weights/tianyi2_e8_s128.pth` | 135 MB | `ff5cd8eef78e6b47748ea64eab6c245c` |
+权重放在 **Releases** 里，不随仓库提交（单个 129–148 MB，超过 GitHub 的 100 MB 单文件上限）。
 
-> 下完先对一遍 MD5，不匹配就是没下完。
+到 [Releases](https://github.com/Kevin14827/LuoTianyi-TTS/releases) 下载最新版本的两个附件：
+
+| 附件 | 大小 | 放到 | MD5 |
+|---|---|---|---|
+| `tianyi2-e15.ckpt` | ≈148 MB | `weights/GPT_weights/` | `7c4f7051d85b50aace3bd928797c0d44` |
+| `tianyi2_e8_s128.pth` | ≈129 MB | `weights/SoVITS_weights/` | `ff5cd8eef78e6b47748ea64eab6c245c` |
+
+下完先对一遍 MD5，不匹配就是没下完：
+
+```bash
+certutil -hashfile weights\GPT_weights\tianyi2-e15.ckpt MD5
+certutil -hashfile weights\SoVITS_weights\tianyi2_e8_s128.pth MD5
+```
 
 ---
 
@@ -46,7 +55,11 @@ git clone https://github.com/RVC-Boss/GPT-SoVITS.git engine/GPT-SoVITS
 set GSV_ENGINE=D:\somewhere\engine
 ```
 
-### 2. 准备参考音频
+### 2. 放好权重
+
+从 Releases 下载两个附件，按上表放进 `weights/GPT_weights/` 和 `weights/SoVITS_weights/`。
+
+### 3. 准备参考音频
 
 推理需要一段 3–10 秒的干净人声作为音色参考。放进 `ref/`：
 
@@ -57,7 +70,7 @@ ref/prompt.txt    # 与 ref.wav 逐字对应的文字
 
 `ref/` 里的音频**不会**进仓库（见 `.gitignore`），需要你自己准备。
 
-### 3. 合成
+### 4. 合成
 
 ```bash
 python synth.py --text "你好呀，我是洛天依。好久没跟你说话了。" --lang zh --out output/test.wav

@@ -1,75 +1,85 @@
 # 发布流程
 
-本仓库按设计**需要分发权重**。以下是把仓库推到 GitHub 的步骤。
+**本仓库采用的方案：权重走 Release 附件，仓库只存代码和文档。**
 
 ## 0. 前置
 
 先读根目录 `NOTICE.md`，确认你接受其中的使用与责任说明。
 
-## 1. 本地初始化
+## 1. 为什么权重不进仓库
+
+| 文件 | 大小 | GitHub 限制 |
+|---|---|---|
+| `tianyi2-e15.ckpt` | ≈148 MB | 单文件超 100 MB，`push` 直接被拒（`GH001`） |
+| `tianyi2_e8_s128.pth` | ≈129 MB | 同上 |
+
+而且一旦用普通提交写进 history，文件会永久留在 `.git` 里，`git rm` 也不会让仓库变小，除非用 `filter-repo` 重写全部历史（所有 commit hash 全变）。
+
+所以走 Release 附件：不占 LFS 额度，不污染 git history。
+
+## 2. 发 Release
+
+```powershell
+$env:HTTPS_PROXY="http://127.0.0.1:10809"    # 需要代理才连得上 GitHub
+$gh = "C:\Program Files\GitHub CLI\gh.exe"
+
+& $gh release create v1.0.0 `
+  --title "LuoTianyi-TTS v1.0.0" `
+  --notes "GPT-SoVITS v2Pro 微调权重（32kHz / zh-ja-en）。使用前请阅读 NOTICE.md。" `
+  "C:\Users\c0810\Desktop\LuoTianyi_TTS\GPT_weights\tianyi2-e15.ckpt" `
+  "C:\Users\c0810\Desktop\LuoTianyi_TTS\SoVITS_weights\tianyi2_e8_s128.pth"
+```
+
+`gh` 会打印 assets 的上传结果和 release 页面地址。
+
+**注意**：`--notes` 里别写任何"官方""授权"之类的措辞，也别承诺商用可用。
+
+## 3. 校验
+
+```powershell
+& $gh release view v1.0.0 --repo Kevin14827/LuoTianyi-TTS
+& $gh release download v1.0.0 --repo Kevin14827/LuoTianyi-TTS --dir /tmp/check
+```
+
+下回来的两个文件对一遍 MD5，应该和 `weights/README.md` 里写的一致：
+
+```
+7c4f7051d85b50aace3bd928797c0d44  tianyi2-e15.ckpt
+ff5cd8eef78e6b47748ea64eab6c245c  tianyi2_e8_s128.pth
+```
+
+## 4. 日常改文档
+
+代码和文档照常走 git：
 
 ```bash
-cd LuoTianyi-TTS
-git init
 git add .
-git commit -m "init: LuoTianyi-TTS inference repo"
+git commit -m "docs: ..."
+git push
 ```
 
 `.gitignore` 已排除 `engine/`、`ref/*.wav`、`output/`，不会误传。
 
-## 2. 权重怎么放
-
-权重单个 135–155 MB，**两个加起来 290 MB**，超过 GitHub 普通仓库单文件 100 MB 的硬限制，必须选一种方式：
-
-### 方案 A：Git LFS（推荐，clone 即得）
-
-```bash
-git lfs install
-git lfs track "weights/**/*.ckpt" "weights/**/*.pth"
-git add .gitattributes
-git add weights/GPT_weights/tianyi2-e15.ckpt
-git add weights/SoVITS_weights/tianyi2_e8_s128.pth
-git commit -m "add: model weights via LFS"
-git push
-```
-
-注意 LFS 免费额度 1 GB 存储 / 1 GB 月流量，两个权重约 290 MB，够用但要注意流量。
-
-### 方案 B：Release 附件
-
-仓库里只留 `weights/README.md`，权重传到 Release 的 assets 里。好处是不占 LFS 额度，坏处是用户得手动下载放置。
-
-### 方案 C：HuggingFace 镜像
-
-权重传 HuggingFace，仓库 README 里给链接。HF 对模型文件友好，国内访问可以走 `hf-mirror.com`。
-
-```bash
-pip install -U huggingface_hub
-huggingface-cli upload <你的HF用户名>/LuoTianyi-TTS ./weights --repo-type model
-```
-
-## 3. 推送到远端
-
-```bash
-git remote add origin git@github.com:<用户名>/LuoTianyi-TTS.git
-git branch -M main
-git push -u origin main
-```
-
-## 4. 发布前自查
+## 5. 发布前自查
 
 - [ ] `git status` 里没有 `ref/*.wav`
 - [ ] 没有 `engine/` 目录被误加
 - [ ] 没有训练素材、数据集 list 文件
-- [ ] 权重 MD5 与 `weights/README.md` 一致
+- [ ] Release 两个附件 MD5 与 `weights/README.md` 一致
 - [ ] `NOTICE.md` 在仓库根目录
-- [ ] LICENSE 与 NOTICE 的授权范围不冲突
+- [ ] LICENSE（代码 MIT）与 NOTICE（权重声明）范围没冲突
+- [ ] Release notes 里没有授权类措辞
 
-## 5. 收到 DMCA 怎么办
+## 6. 备选方案
 
-如果收到下架通知：
+**Git LFS**：`git lfs track "weights/**/*.ckpt" "weights/**/*.pth"` 后再 `git add weights/`。
+好处是 clone 即得权重；坏处是消耗 LFS 免费额度（1 GB 存储 / 1 GB 月流量），每次 clone 都走流量。
+
+**HuggingFace 镜像**：权重传 HF，README 给链接。国内可走 `hf-mirror.com`。
+
+## 7. 收到 DMCA 怎么办
 
 1. **不要**反复重推同一内容，会升级为账号处罚。
 2. 先读通知，确认是哪一方、针对哪个文件。
-3. 有异议走 GitHub 的 counter notice 流程；没异议就移除对应文件并保留代码部分。
+3. 有异议走 GitHub 的 counter notice 流程；没异议就移除对应附件，保留代码部分。
 4. 三次有效 strike 会封号，别赌。
